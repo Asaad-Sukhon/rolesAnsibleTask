@@ -1,0 +1,60 @@
+---
+
+# tasks file for thirdTask
+
+  - name: Disable selinux
+    ansible.builtin.lineinfile:
+       path: /etc/selinux/config
+       regexp: '^SELINUX='
+       line: SELINUX=disabled
+       state: present
+
+
+  - name: install httpd
+    yum:
+      name: 
+        - httpd
+
+
+  - name: http status
+    systemd:
+      name: httpd
+      status: started
+      enabled: yes
+
+  - name: Configure Needed Repositories
+    yum:
+      name:
+        - epel-release
+        - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+
+  - name: install php
+    yum:
+      name:
+        - php
+        - php-pear 
+        - php-cgi 
+        - php-common
+        - php-mbstring
+        - php-snmp
+        - php-gd
+        - php-pecl-mysql
+        - php-xml
+        - php-mysql
+        - php-gettext
+        - php-bcmath
+      disablerepo: remi-php54
+      enablerepo: "epel,remi-php72"
+        
+  - name: change the time zone
+    ansible.builtin.lineinfile:
+       path: /etc/php.ini
+       regexp: ";date.timezone =  "
+       line: " date.timezone =  Asia/Jerusalem "
+       state: present
+
+
+
+
+
