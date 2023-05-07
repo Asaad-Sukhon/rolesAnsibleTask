@@ -1,0 +1,120 @@
+---
+
+# tasks file for thirdTask
+
+  - name: Disable selinux
+    ansible.builtin.lineinfile:
+       path: /etc/selinux/config
+       regexp: '^SELINUX='
+       line: SELINUX=disabled
+       state: present
+
+
+  - name: install httpd
+    yum:
+      name: 
+        - httpd
+
+
+  - name: http status
+    systemd:
+      name: httpd
+      status: started
+      enabled: yes
+
+  - name: Configure Needed Repositories
+    yum:
+      name:
+        - epel-release
+        - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+
+  - name: install php
+    yum:
+      name:
+        - php
+        - php-pear 
+        - php-cgi 
+        - php-common
+        - php-mbstring
+        - php-snmp
+        - php-gd
+        - php-pecl-mysql
+        - php-xml
+        - php-mysql
+        - php-gettext
+        - php-bcmath
+      disablerepo: remi-php54
+      enablerepo: "epel,remi-php72"
+        
+  - name: change the time zone
+    ansible.builtin.lineinfile:
+       path: /etc/php.ini
+       regexp: ";date.timezone =  "
+       line: " date.timezone =  Asia/Jerusalem "
+       state: present
+
+
+  - name: install mariadb
+    yum:
+       name: mariadb-server
+       enablerepo: "remi"
+
+  - name: check if mariadb is started
+    systemctl:
+       name: mariadb-server
+       enabled: yes
+       state: started
+
+  - name: create database
+    mysql_db:
+       name: zabbixDatabase
+       encoding: utf8
+       state: present
+
+  - name: create user
+    mysql_user:
+      name: zabbix
+      password: Qwerty!2345
+      host: localhost
+      priv: '*.*:ALL'
+      state: present
+
+  - name: install zabbix
+    yum:
+      name:
+        - zabbix-server-mysql
+        - zabbix-web-mysql
+        - zabbix-agent
+        - zabbix-get
+      state: present
+      enablerepo: zabbix
+
+  - name: change date and time in zabbix conf
+    ansible.builtin.lineinfile:
+       path: /etc/httpd/conf.d/zabbix.conf
+       regexp: '# php_value date.timezone Australia/Sydney'
+       line: php_value date.timezone Asia/Jerusalem 
+       state: present
+  
+
+  - name: Import the MySQL dump file
+    ansible.builtin.shell: ' zcat /usr/share/doc/zabbix-server-mysql-4.0.4/create.sql.gz | mysql -u zabbix -p Qwerty!2345 zabbixDatabase'
+
+
+  - name: add ports
+    ansible.posix.firewalld:
+      port: 10050-10051/tcp
+      permanent: true
+      state: enabled
+
+  - name: add services
+    ansible.posix.firewalld:
+      service:
+         - http
+         - https
+      permanent: true
+      state: enabled
+
+
+

@@ -1,0 +1,21 @@
+--- 
+  - name: task on local
+    hosts: local
+    become: yes
+    roles:
+      - firstTask
+
+  - name: add the repo
+    hosts: server,agent1
+    roles:
+      - secondTask
+
+  - name: task on server
+    hosts: server
+    roles:
+      - thirsTask
+
+  - name: task on agent
+    hosts: agent1
+    roles:
+      - fourthTask
