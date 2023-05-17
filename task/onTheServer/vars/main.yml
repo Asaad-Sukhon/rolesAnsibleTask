@@ -1,0 +1,8 @@
+---
+# vars file for thirdTask
+userName: zabbix
+userPassword: Qwerty!2345
+host: localhost
+port: 10050-10051/tcp 
+
+

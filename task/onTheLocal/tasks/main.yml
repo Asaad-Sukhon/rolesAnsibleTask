@@ -1,0 +1,26 @@
+---
+# tasks file for firstTask/
+  - name: install dependencies
+    yum:
+     name:
+      - httpd
+      - createrepo
+      - yum-utils
+      - wget
+     state: present
+
+  - name: enable httpd service
+    systemd:
+      state: started
+      enabled: yes  
+      name: httpd
+
+  - name: download zabbix
+    yum:    
+       name: zabbix
+       state: present
+       download_only: true
+       download_dir: /var/www/html/zabbix
+
+  - name: create repo
+    command: createrepo /var/www/html/zabbix

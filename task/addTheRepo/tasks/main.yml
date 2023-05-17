@@ -1,0 +1,8 @@
+---
+# tasks file for secondTask
+  - name: add repo
+    yum_repository:
+      name: zabbix
+      baseurl: http://172.20.48.63/zabbix
+      enabled: yes
+      gpgcheck: no   
