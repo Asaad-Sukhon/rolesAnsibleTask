@@ -1,7 +1,0 @@
-
-
-controller ansible_host=172.20.48.63 amsible_ssh_pass=centos
-
-server ansible_host=172.20.48.69 ansible_ssh_pass=centos
-
-agent1 ansible_host=172.20.48.70 ansible_ssh_pass=centos

@@ -1,8 +1,0 @@
----
-# vars file for fourthTask
-
-
- agent:
-  - "Server=127.0.0.1" : "Server=172.20.48.63"
-  - "ServerActive=172.0.0.1" : "ServerActive=172.20.48.63"
-  - "Hostname=Zabbix server" : "Hostname=target"
